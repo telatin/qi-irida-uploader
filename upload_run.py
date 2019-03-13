@@ -1,7 +1,9 @@
 import argparse
-import global_settings
+import os
+
 import config
 import core
+import global_settings
 
 
 class ConfigAction(argparse.Action):
@@ -46,7 +48,7 @@ argument_parser.add_argument('-v', '--version',
                              action='version', version='IRIDA Uploader {}'.format(global_settings.UPLOADER_VERSION))
 # Our main argument. It is required or else an error will be thrown when the program is run
 argument_parser.add_argument('directory',
-                             help='Location of sequencing run to upload')
+                             help='Location of sequencing run to upload. Directory must be writable.')
 # Optional argument, for using an alternative config file.
 argument_parser.add_argument('-c', '--config',
                              action=ConfigAction,
@@ -62,7 +64,11 @@ argument_parser.add_argument('-f', '--force',
 def main():
     # Parse the arguments passed from the command line and start the upload
     args = argument_parser.parse_args()
-    upload(args.directory, args.force)
+    directory = args.directory
+    if not os.access(directory, os.W_OK):  # Cannot access upload directory
+        print("ERROR! Specified directory given is not writable: {}".format(directory))
+        return 1
+    upload(directory, args.force)
 
 
 def upload(run_directory, force_upload):
