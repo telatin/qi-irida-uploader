@@ -1,7 +1,7 @@
 IRIDA Uploader
 ==============
 
-[![Build Status](https://travis-ci.org/phac-nml/irida-uploader.svg?branch=development)](https://travis-ci.org/phac-nml/irida-uploader)
+[![Build Status](https://travis-ci.org/happykhan/irida-uploader.svg?branch=development)](https://travis-ci.org/happykhan/irida-uploader)
 
 [![Documentation Status](https://readthedocs.org/projects/irida-uploader/badge/?version=latest)](https://irida-uploader.readthedocs.io/en/latest/?badge=latest)
 
