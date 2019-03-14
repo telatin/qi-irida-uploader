@@ -35,4 +35,10 @@ class Parser:
         if parser_type == "miseq":
             logging.debug("Creating miseq parser")
             return miseq.Parser()
+        if parser_type == "directorypath":
+            logging.debug("Creating directorypath parser")
+            return directorypath.Parser()
+        if parser_type == "basemount":
+            logging.debug("Creating basemount parser")
+            return basemount.Parser()
         raise AssertionError("Bad parser creation, invalid parser_type given: {}".format(parser_type))
