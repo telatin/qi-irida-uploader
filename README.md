@@ -1,5 +1,7 @@
-IRIDA Uploader
-==============
+QI IRIDA Uploader
+=================
+
+**This is a fork of phac-nml/irida-uploader . I have added some extra parsers that cater to my specific needs.**
 
 [![Build Status](https://travis-ci.org/happykhan/irida-uploader.svg?branch=development)](https://travis-ci.org/happykhan/irida-uploader)
 
