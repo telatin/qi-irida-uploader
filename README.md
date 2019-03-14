@@ -3,7 +3,7 @@ QI IRIDA Uploader
 
 **This is a fork of phac-nml/irida-uploader . I have added some extra parsers that cater to my specific needs.**
 
-[![Build Status](https://travis-ci.org/happykhan/irida-uploader.svg?branch=development)](https://travis-ci.org/happykhan/irida-uploader)
+[![Build Status](https://travis-ci.org/happykhan/qi-irida-uploader.svg?branch=development)](https://travis-ci.org/happykhan/qi-irida-uploader)
 
 [![Documentation Status](https://readthedocs.org/projects/irida-uploader/badge/?version=latest)](https://irida-uploader.readthedocs.io/en/latest/?badge=latest)
 
