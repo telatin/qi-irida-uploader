@@ -7,8 +7,6 @@ QI IRIDA Uploader
 
 [![Documentation Status](https://readthedocs.org/projects/irida-uploader/badge/?version=latest)](https://irida-uploader.readthedocs.io/en/latest/?badge=latest)
 
-[![PyPI](https://pypi.org/project/QI-IRIDA-Uploader/)](https://img.shields.io/pypi/v/QI-IRIDA-Uploader.svg)
-
 Download / Installation
 --------------------
 
