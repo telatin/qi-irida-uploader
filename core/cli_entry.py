@@ -1,3 +1,4 @@
+import os
 import logging
 
 from pprint import pformat
@@ -150,7 +151,8 @@ def logging_start_block(directory):
     Includes the uploader version number set in the global_settings module
     :return:
     """
-    logger.add_log_to_directory(directory)
+    if os.access(os.path.join(directory, 'irida-uploader.log'), os.W_OK):
+         logger.add_log_to_directory(directory)
     logging.info("==================================================")
     logging.info("---------------STARTING UPLOAD RUN----------------")
     logging.info("Uploader Version {}".format(global_settings.UPLOADER_VERSION))

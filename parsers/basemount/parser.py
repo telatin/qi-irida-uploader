@@ -59,7 +59,8 @@ class Parser:
         :return: DirectoryStatus object
         """
         logging.info("looking for run in {}".format(directory))
-
+        global sample_file
+        sample_file = os.path.join(directory, 'SampleList.csv')
         return progress.get_directory_status(directory, 'SampleList.csv')
 
     @staticmethod
@@ -127,6 +128,11 @@ class Parser:
                 if not has_reads:
                     logging.warning('No Reads found in %s' % sample)
         return sample_sheet_path
+
+    @staticmethod
+    def get_sample_sheet_file_name():
+        global sample_file
+        return sample_file
 
 
     @staticmethod
