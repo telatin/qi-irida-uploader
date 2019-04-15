@@ -16,6 +16,7 @@ class Parser:
         get_sequencing_run(sample_sheet)
 
     """
+    sample_file = None
 
     @staticmethod
     def factory(parser_type):
