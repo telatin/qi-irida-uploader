@@ -1,6 +1,5 @@
 import logging
-
-from . import directory, miseq, basemount, directorypath
+from . import directory, miseq, basemount, directorypath, miniseq
 
 
 class Parser:
@@ -42,4 +41,7 @@ class Parser:
         if parser_type == "basemount":
             logging.debug("Creating basemount parser")
             return basemount.Parser()
+        if parser_type == "miniseq":
+            logging.debug("Creating miniseq parser")
+            return miniseq.Parser()
         raise AssertionError("Bad parser creation, invalid parser_type given: {}".format(parser_type))
