@@ -48,7 +48,7 @@ class Parser:
         runs = []
         directory_list = Parser._find_directory_list(directory)
         for d in directory_list:
-            runs.append(progress.get_directory_status(d, Parser.get_sample_sheet_file_name()))
+            runs.append(progress.get_directory_status(d, 'SampleList.csv'))
 
         return runs
 
@@ -62,7 +62,7 @@ class Parser:
         """
         logging.info("looking for run in {}".format(directory))
 
-        return progress.get_directory_status(directory, Parser.get_sample_sheet_file_name())
+        return progress.get_directory_status(directory, 'SampleList.csv')
 
     @staticmethod
     def get_sample_sheet(directory):
@@ -82,7 +82,7 @@ class Parser:
                                             "can not parse samples from this directory {}".format(directory),
                                             directory)
 
-        sample_sheet_file_name = Parser.get_sample_sheet_file_name()
+        sample_sheet_file_name = 'SampleList.csv'
         file_list = next(os.walk(directory))[2]  # Gets the list of files in the directory
         if sample_sheet_file_name not in file_list:
             logging.error("No sample sheet file in the Directory Upload format found")

@@ -57,8 +57,6 @@ argument_parser.add_argument('-f', '--force',
                              action='store_true',  # This line makes it not parse a variable
                              help='Uploader will ignore the status file, '
                                   'and try to upload even when a run is in non new status.')
-
-
 def main():
     # Parse the arguments passed from the command line and start the upload
     args = argument_parser.parse_args()

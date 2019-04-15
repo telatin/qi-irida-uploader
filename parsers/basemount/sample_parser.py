@@ -17,7 +17,6 @@ def build_sequencing_run_from_samples(sample_sheet_file):
     :return: SequencingRun
     """
     sample_list = _parse_sample_list(sample_sheet_file)
-
     logging.debug("Building SequencingRun from parsed data")
 
     # create list of projects and add samples to appropriate project
@@ -57,14 +56,22 @@ def build_sequencing_run_from_samples(sample_sheet_file):
         project.add_sample(sample_obj)
 
     # add the layout type to the sequencing run so we know if it is paired or single end
-    if project_list[0].sample_list[0].sequence_file.is_paired_end():
-        metadata = {'layoutType': 'PAIRED_END'}
-    else:
-        metadata = {'layoutType': 'SINGLE_END'}
+    if not project_list:
+        logging.error("No samples to upload!")
+    try:
+        if project_list[0].sample_list[0].sequence_file.is_paired_end():
+            metadata = {'layoutType': 'PAIRED_END'}
+        else:
+            metadata = {'layoutType': 'SINGLE_END'}
+    except IndexError:
+        logging.error("No samples to upload!")
+        import sys
+        sys.exit(-1)
 
     sequence_run = model.SequencingRun(metadata=metadata, project_list=project_list)
     logging.debug("SequencingRun built")
     return sequence_run
+
 
 
 def _parse_sample_list(sample_sheet_file):
@@ -88,7 +95,10 @@ def _parse_sample_list(sample_sheet_file):
     api_instance = initialize_api_from_config()
     filtered_sample_dict_list = []
     for sample_dict in sample_dict_list:
-        uploaded_seqs = [x['fileName'] for x in api_instance.get_sequence_files(int(sample_dict['Project_ID']),
+        uploaded_seqs = []
+        existing_samples = [x.sample_name for x in api_instance.get_samples(int(sample_dict['Project_ID']))]
+        if sample_dict.get('Sample_Name') in existing_samples:
+            uploaded_seqs = [x['fileName'] for x in api_instance.get_sequence_files(int(sample_dict['Project_ID']),
                                                                                 sample_dict['Sample_Name'])]
         if os.path.basename(sample_dict['File_Forward']).replace('.gz', '') not in uploaded_seqs and \
                 '%s_R1.fastq' % sample_dict['Sample_Name'] not in uploaded_seqs:

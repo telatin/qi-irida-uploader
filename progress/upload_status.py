@@ -5,7 +5,10 @@ import os
 import config
 from model.directory_status import DirectoryStatus
 
-from . import exceptions
+try:
+    from . import exceptions
+except:
+    import exceptions
 
 
 # Module level Constants
@@ -94,8 +97,9 @@ def write_directory_status(directory, status, run_id=None):
 
     if not os.access(directory, os.W_OK):  # Cannot access upload directory
         raise exceptions.DirectoryError("Cannot access directory", directory)
-
     uploader_info_file = os.path.join(directory, STATUS_FILE_NAME)
+    if not os.access(uploader_info_file, os.W_OK):  # Cannot access upload directory
+        uploader_info_file = os.path.join('/tmp/', STATUS_FILE_NAME)
     if run_id:
         json_data = {STATUS_FIELD: status,
                      DATE_TIME_FIELD: _get_date_time_field(),

@@ -11,6 +11,8 @@ from core.api_handler import initialize_api_from_config
 
 class Parser:
 
+    sample_file = None
+
     @staticmethod
     def _find_directory_list(directory):
         """Find and return all directories in the specified directory.
@@ -59,7 +61,8 @@ class Parser:
         :return: DirectoryStatus object
         """
         logging.info("looking for run in {}".format(directory))
-
+        global sample_file
+        sample_file = os.path.join(directory, 'SampleList.csv')
         return progress.get_directory_status(directory, 'SampleList.csv')
 
     @staticmethod
@@ -113,6 +116,8 @@ class Parser:
                     r1 = re.search("R1_\d+.fastq.gz", read_file)
                     if sample_name_match:
                         sample_dict['sample_name'] = sample_name_match.group(1)
+                        if len(sample_dict['sample_name']) < 4:
+                            sample_dict['sample_name'] = project_name + '-' + sample_dict['sample_name']
                         if sample_dict['sample_name'].endswith(" (2)"):
                             has_reads = True
                             continue
@@ -127,6 +132,11 @@ class Parser:
                 if not has_reads:
                     logging.warning('No Reads found in %s' % sample)
         return sample_sheet_path
+
+    @staticmethod
+    def get_sample_sheet_file_name():
+        global sample_file
+        return sample_file
 
 
     @staticmethod
