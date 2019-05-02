@@ -61,9 +61,8 @@ class Parser:
         :return: DirectoryStatus object
         """
         logging.info("looking for run in {}".format(directory))
-        global sample_file
-        sample_file = os.path.join(directory, 'SampleList.csv')
-        return progress.get_directory_status(directory, 'SampleList.csv')
+        sample_file = Parser.get_sample_sheet(directory)
+        return progress.get_directory_status(os.path.dirname(sample_file), [os.path.basename(sample_file)])
 
     @staticmethod
     def _get_project_id(project_name):
@@ -88,14 +87,6 @@ class Parser:
         :return:
         """
         logging.info("Looking for sample sheet in {}".format(directory))
-
-        # Checks if we can access to the given directory, return empty and log a warning if we cannot.
-        if not os.access(directory, os.W_OK):
-            logging.error(("The directory is not accessible, can not parse samples from this directory {}"
-                           "".format(directory), directory))
-            raise exceptions.DirectoryError("The directory is not accessible, "
-                                            "can not parse samples from this directory {}".format(directory),
-                                            directory)
         # Handle samples
         project_name = 'Basespace-' + os.path.basename(directory)
         sample_sheet_path = '/tmp/%s-Samplesheet.csv' % project_name

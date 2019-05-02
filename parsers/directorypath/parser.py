@@ -90,6 +90,10 @@ class Parser:
             return os.path.join(directory, sample_sheet_file_name)
 
     @staticmethod
+    def get_sample_sheet_file_name():
+        return 'SampleList.csv' 
+
+    @staticmethod
     def get_sequencing_run(sample_sheet):
         """
         Does local validation on the integrity of the run directory / sample sheet

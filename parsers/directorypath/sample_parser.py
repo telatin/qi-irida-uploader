@@ -94,13 +94,13 @@ def _parse_sample_list(sample_sheet_file):
             has_single_end_read = True
 
         # Check if file names are in the files we found in the directory
-        if path.exists(sample_dict['File_Forward']):
+        if not path.exists(sample_dict['File_Forward']):
             raise exceptions.SampleSheetError(
                 ("Your sample sheet is malformed. {} Does not match any file in the directory {}"
                  "".format(sample_dict['File_Forward'], data_dir)),
                 sample_sheet_file
             )
-        if paired_end_read and path.exists(sample_dict['File_Reverse']):
+        if paired_end_read and not path.exists(sample_dict['File_Reverse']):
             raise exceptions.SampleSheetError(
                 ("Your sample sheet is malformed. {} Does not match any file in the directory {}"
                  "".format(sample_dict['File_Reverse'], data_dir)),

@@ -54,12 +54,7 @@ class Parser:
         runs = []
         directory_list = Parser._find_directory_list(directory)
         for d in directory_list:
-<<<<<<< HEAD
-            runs.append(progress.get_directory_status(d, 'SampleList.csv'))
-=======
             runs.append(progress.get_directory_status(d, Parser.get_required_file_list()))
->>>>>>> 2e7c1e2afcec5205303981019c9a0d212c9213e9
-
         return runs
 
     @staticmethod
@@ -72,11 +67,7 @@ class Parser:
         """
         logging.info("looking for run in {}".format(directory))
 
-<<<<<<< HEAD
-        return progress.get_directory_status(directory, 'SampleList.csv')
-=======
         return progress.get_directory_status(directory, Parser.get_required_file_list())
->>>>>>> 2e7c1e2afcec5205303981019c9a0d212c9213e9
 
     @staticmethod
     def get_sample_sheet(directory):

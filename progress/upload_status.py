@@ -40,7 +40,10 @@ def get_directory_status(directory, required_file_list):
         result.message = 'Directory cannot be accessed. Please check permissions'
         return result
 
-    file_list = next(os.walk(directory))[2]  # Gets the list of files in the directory
+    file_list = next(os.walk(directory))[2]
+    if type(required_file_list) == str:
+        required_file_list = [required_file_list]
+    # Gets the list of files in the directory
     for file_name in required_file_list:
         if file_name not in file_list:
             result.status = DirectoryStatus.INVALID
