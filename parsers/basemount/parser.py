@@ -7,7 +7,7 @@ from model.project import Project
 import subprocess
 from .. import exceptions
 from . import sample_parser, validation
-from core.api_handler import initialize_api_from_config
+from core.api_handler import initialize_api_from_config, _get_api_instance
 
 class Parser:
 
@@ -123,16 +123,18 @@ class Parser:
             sample_paths = [os.path.join(sample_directory, x, "Files") for x in os.listdir(sample_directory) if
                             not x.startswith('.')]
             irida_project_id = Parser._get_project_id(project_name)
+            existing_samples = [x.sample_name for x in _get_api_instance().get_samples(irida_project_id)]
             for sample in sample_paths:
                 sample_dict = dict(project_id=irida_project_id)
                 logging.debug('Reading folder %s' % sample)
                 sample_dict['sample_name'] = re.search("Samples\/(.+)\/Files", sample).group(1)
-                r1, r2 = Parser.merge_reads(directory, sample_dict['sample_name'], temp_dir='/tmp/irida/')
-                if len(sample_dict['sample_name']) < 4:
-                    sample_dict['sample_name'] = project_name + '-' + sample_dict['sample_name']
-                sample_dict['file_forward'] = r1
-                sample_dict['file_reverse'] = r2
-                sample_sheet.write("{sample_name},{project_id},{file_forward},{file_reverse}\n".format(**sample_dict))
+                if not sample_dict['sample_name'] in existing_samples:
+                    r1, r2 = Parser.merge_reads(directory, sample_dict['sample_name'], temp_dir='/tmp/irida/')
+                    if len(sample_dict['sample_name']) < 4:
+                        sample_dict['sample_name'] = project_name + '-' + sample_dict['sample_name']
+                    sample_dict['file_forward'] = r1
+                    sample_dict['file_reverse'] = r2
+                    sample_sheet.write("{sample_name},{project_id},{file_forward},{file_reverse}\n".format(**sample_dict))
         return sample_sheet_path
 
     @staticmethod
