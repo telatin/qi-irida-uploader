@@ -87,8 +87,8 @@ class Parser:
 
     @staticmethod
     def merge_reads(directory, sample_name, temp_dir='/tmp/irida/'):
-        if not os.path.exists('/tmp/irida'):
-            os.mkdir('/tmp/irida')
+        if not os.path.exists(temp_dir):
+            os.mkdir(temp_dir)
         merged_reads_r1 = os.path.join(temp_dir, sample_name + '_R1.fastq.gz')
         merged_reads_r2 = os.path.join(temp_dir, sample_name + '_R2.fastq.gz')
         if not os.path.exists(merged_reads_r1) or not os.path.exists(merged_reads_r2):
@@ -129,7 +129,7 @@ class Parser:
                 logging.debug('Reading folder %s' % sample)
                 sample_dict['sample_name'] = re.search("Samples\/(.+)\/Files", sample).group(1)
                 if not sample_dict['sample_name'] in existing_samples:
-                    r1, r2 = Parser.merge_reads(directory, sample_dict['sample_name'], temp_dir='/tmp/irida/')
+                    r1, r2 = Parser.merge_reads(directory, sample_dict['sample_name'], temp_dir='/qib/services/galaxy/temp/irida')
                     if len(sample_dict['sample_name']) < 4:
                         sample_dict['sample_name'] = project_name + '-' + sample_dict['sample_name']
                     sample_dict['file_forward'] = r1
