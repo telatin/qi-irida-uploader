@@ -4,7 +4,7 @@ import re
 
 import progress
 from model.project import Project
-
+import subprocess
 from .. import exceptions
 from . import sample_parser, validation
 from core.api_handler import initialize_api_from_config
@@ -68,6 +68,8 @@ class Parser:
     def _get_project_id(project_name):
         api_instance = initialize_api_from_config()
         api_instance.get_projects()
+        if project_name.endswith(' (2)'):
+            project_name = project_name[:-4]
         project_ids = [x._id for x in api_instance.get_projects() if x._name == project_name]
         if len(project_ids) == 1:
             return project_ids[0]
@@ -79,6 +81,28 @@ class Parser:
 
 
     @staticmethod
+    def get_subreads(directory, r):
+        return sorted(['"' + os.path.join(directory, x) + '"' for x in os.listdir(directory)
+                           if x.endswith(r + '_001.fastq.gz')])
+
+    @staticmethod
+    def merge_reads(directory, sample_name, temp_dir='/tmp/irida/'):
+        if not os.path.exists('/tmp/irida'):
+            os.mkdir('/tmp/irida')
+        merged_reads_r1 = os.path.join(temp_dir, sample_name + '_R1.fastq.gz')
+        merged_reads_r2 = os.path.join(temp_dir, sample_name + '_R2.fastq.gz')
+        if not os.path.exists(merged_reads_r1) or not os.path.exists(merged_reads_r2):
+            read_dir = os.path.join(directory, 'Samples', sample_name, 'Files')
+            r1_list = Parser.get_subreads(read_dir, 'R1')
+            r2_list = Parser.get_subreads(read_dir, 'R2')
+            if len(r1_list) == 4:
+                subprocess.call('cat {} > {}'.format(' '.join(r1_list),
+                                                     merged_reads_r1), shell=True)
+                subprocess.call('cat {} > {}'.format(' '.join(r2_list),
+                                                     merged_reads_r2), shell=True)
+        return merged_reads_r1, merged_reads_r2
+
+    @staticmethod
     def get_sample_sheet(directory):
         """
         gets the sample sheet file path from a given run directory
@@ -86,6 +110,8 @@ class Parser:
         :param directory:
         :return:
         """
+        if directory.endswith('/'):
+            directory = directory[:-1]
         logging.info("Looking for sample sheet in {}".format(directory))
         # Handle samples
         project_name = 'Basespace-' + os.path.basename(directory)
@@ -100,28 +126,13 @@ class Parser:
             for sample in sample_paths:
                 sample_dict = dict(project_id=irida_project_id)
                 logging.debug('Reading folder %s' % sample)
-                has_reads = False
-                for read_file in os.listdir(sample):
-                    read_file = os.path.join(sample, read_file)
-                    sample_name_match = re.search("Samples\/(.+)\/Files", sample)
-                    r1 = re.search("R1_\d+.fastq.gz", read_file)
-                    if sample_name_match:
-                        sample_dict['sample_name'] = sample_name_match.group(1)
-                        if len(sample_dict['sample_name']) < 4:
-                            sample_dict['sample_name'] = project_name + '-' + sample_dict['sample_name']
-                        if sample_dict['sample_name'].endswith(" (2)"):
-                            has_reads = True
-                            continue
-                    if r1:
-                        sample_dict['file_forward'] = read_file
-                        has_reads = True
-                        # Find r2
-                        r2_path = read_file.replace('_R1_', '_R2_')
-                        if os.path.exists(r2_path):
-                            sample_dict['file_reverse'] = r2_path
-                        sample_sheet.write("{sample_name},{project_id},{file_forward},{file_reverse}\n".format(**sample_dict))
-                if not has_reads:
-                    logging.warning('No Reads found in %s' % sample)
+                sample_dict['sample_name'] = re.search("Samples\/(.+)\/Files", sample).group(1)
+                r1, r2 = Parser.merge_reads(directory, sample_dict['sample_name'], temp_dir='/tmp/irida/')
+                if len(sample_dict['sample_name']) < 4:
+                    sample_dict['sample_name'] = project_name + '-' + sample_dict['sample_name']
+                sample_dict['file_forward'] = r1
+                sample_dict['file_reverse'] = r2
+                sample_sheet.write("{sample_name},{project_id},{file_forward},{file_reverse}\n".format(**sample_dict))
         return sample_sheet_path
 
     @staticmethod
