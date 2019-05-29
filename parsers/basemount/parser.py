@@ -68,7 +68,7 @@ class Parser:
     def _get_project_id(project_name):
         api_instance = initialize_api_from_config()
         api_instance.get_projects()
-        if project_name.endswith(' (2)'):
+        if project_name.endswith(' (2)') or project_name.endswith(' (3)'):
             project_name = project_name[:-4]
         project_ids = [x._id for x in api_instance.get_projects() if x._name == project_name]
         if len(project_ids) == 1:
