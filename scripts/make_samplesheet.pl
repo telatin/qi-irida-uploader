@@ -73,8 +73,8 @@ while (my $file = readdir($dir) ) {
                 next;
         }
 
-        if ( $file !~/fastq/ ) {
-                say STDERR "WARNING! \"$file\" has not a <fastq> extension (skipping)"; # always warn!
+        if ( $file !~/(fastq|fq)/ ) {
+                say STDERR "WARNING! \"$file\" has not a <fastq|fq> extension (skipping)"; # always warn!
                 next;
         }
         my $samplename;
